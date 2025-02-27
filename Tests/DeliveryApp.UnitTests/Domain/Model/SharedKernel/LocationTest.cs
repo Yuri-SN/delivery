@@ -62,4 +62,27 @@ public class LocationShould
         // Assert
         result.Should().BeFalse();
     }
+    
+    [Fact]
+    public void BeCorrectWhenCreateRandom()
+    {
+        // Arrange & Act
+        var location = Location.CreateRandomLocation();
+
+        // Assert
+        Assert.InRange(location.X, 1, 10);
+        Assert.InRange(location.Y, 1, 10);
+    }
+    
+    [Fact]
+    public void ReturnDifferentLocations()
+    {
+        // Arrange & Act
+        var location1 = Location.CreateRandomLocation();
+        var location2 = Location.CreateRandomLocation();
+
+        // Assert
+        Assert.NotEqual(location1.X, location2.X);
+        Assert.NotEqual(location1.Y, location2.Y);
+    }
 }

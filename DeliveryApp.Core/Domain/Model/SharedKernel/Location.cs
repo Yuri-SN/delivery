@@ -65,7 +65,7 @@ public class Location : ValueObject
     ///     Создание случайной локации
     /// </summary>
     /// <returns>Результат</returns>
-    public static Location GetRandomLocation()
+    public static Location CreateRandomLocation()
     {
         var random = new Random();
         return new Location((byte)(random.Next(1, 11)), (byte)(random.Next(1, 11)));
