@@ -9,6 +9,9 @@ namespace DeliveryApp.Core.Domain.Model.SharedKernel;
 /// </summary>
 public class Location : ValueObject
 {
+    private const byte MinCoord = 1;
+    private const byte MaxCoord = 10;
+
     /// <summary>
     ///     Ctr
     /// </summary>
@@ -46,8 +49,8 @@ public class Location : ValueObject
     /// <returns>Результат</returns>
     public static Result<Location, Error> Create(byte x, byte y)
     {
-        if (x is < 1 or > 10 ) return GeneralErrors.ValueIsInvalid(nameof(x));
-        if (y is < 1 or > 10 ) return GeneralErrors.ValueIsInvalid(nameof(y));
+        if (x is < MinCoord or > MaxCoord ) return GeneralErrors.ValueIsInvalid(nameof(x));
+        if (y is < MinCoord or > MaxCoord ) return GeneralErrors.ValueIsInvalid(nameof(y));
         return new Location(x, y);
     }
     
@@ -68,7 +71,7 @@ public class Location : ValueObject
     public static Location CreateRandomLocation()
     {
         var random = new Random();
-        return new Location((byte)(random.Next(1, 11)), (byte)(random.Next(1, 11)));
+        return new Location((byte)(random.Next(MinCoord, MaxCoord + 1)), (byte)(random.Next(MinCoord, MaxCoord + 1)));
     }
 
     /// <summary>
