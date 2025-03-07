@@ -1,16 +1,23 @@
-using CSharpFunctionalExtensions;
 using System.Diagnostics.CodeAnalysis;
+using CSharpFunctionalExtensions;
 using Primitives;
 
 namespace DeliveryApp.Core.Domain.Model.SharedKernel;
 
 /// <summary>
-///     Геопозиция
+///     Координата
 /// </summary>
 public class Location : ValueObject
 {
-    private const byte MinCoord = 1;
-    private const byte MaxCoord = 10;
+    /// <summary>
+    ///     Минимально возможная координата
+    /// </summary>
+    public static Location MinLocation => new(1, 1);
+
+    /// <summary>
+    ///     Максимально возможная координата
+    /// </summary>
+    public static Location MaxLocation => new(10, 10);
 
     /// <summary>
     ///     Ctr
@@ -25,7 +32,7 @@ public class Location : ValueObject
     /// </summary>
     /// <param name="x">Горизонталь</param>
     /// <param name="y">Вертикаль</param>
-    private Location(byte x, byte y) : this()
+    private Location(int x, int y) : this()
     {
         X = x;
         Y = y;
@@ -34,12 +41,12 @@ public class Location : ValueObject
     /// <summary>
     ///     Горизонталь
     /// </summary>
-    public byte X { get; private set;}
+    public int X { get; }
 
     /// <summary>
     ///     Вертикаль
     /// </summary>
-    public byte Y { get; private set;}
+    public int Y { get; }
 
     /// <summary>
     ///     Factory Method
@@ -47,31 +54,43 @@ public class Location : ValueObject
     /// <param name="x">Горизонталь</param>
     /// <param name="y">Вертикаль</param>
     /// <returns>Результат</returns>
-    public static Result<Location, Error> Create(byte x, byte y)
+    public static Result<Location, Error> Create(int x, int y)
     {
-        if (x is < MinCoord or > MaxCoord ) return GeneralErrors.ValueIsInvalid(nameof(x));
-        if (y is < MinCoord or > MaxCoord ) return GeneralErrors.ValueIsInvalid(nameof(y));
+        if (x < MinLocation.X || x > MaxLocation.X) return GeneralErrors.ValueIsInvalid(nameof(x));
+        if (y < MinLocation.Y || y > MaxLocation.Y) return GeneralErrors.ValueIsInvalid(nameof(y));
+
         return new Location(x, y);
     }
-    
+
     /// <summary>
-    ///     Расстояние до другой локации
+    ///     Создать рандомную координату
     /// </summary>
-    /// <param name="other">Локация</param>
     /// <returns>Результат</returns>
-    public byte CalculateDistance(Location other)
+    public static Location CreateRandom()
     {
-        return (byte)(Math.Abs(X - other.X) + Math.Abs(Y - other.Y));
+        var rnd = new Random(Guid.NewGuid().GetHashCode());
+        var x = rnd.Next(MinLocation.X, MaxLocation.X);
+        var y = rnd.Next(MinLocation.Y, MaxLocation.Y);
+        var location = new Location(x, y);
+        return location;
     }
-    
+
     /// <summary>
-    ///     Создание случайной локации
+    ///     Рассчитать дистанцию
     /// </summary>
+    /// <param name="targetLocation">Конечная координата</param>
     /// <returns>Результат</returns>
-    public static Location CreateRandomLocation()
+    public Result<int, Error> DistanceTo(Location targetLocation)
     {
-        var random = new Random();
-        return new Location((byte)(random.Next(MinCoord, MaxCoord + 1)), (byte)(random.Next(MinCoord, MaxCoord + 1)));
+        if (targetLocation == null) return GeneralErrors.ValueIsRequired(nameof(targetLocation));
+
+        // Считаем разницу
+        var diffX = Math.Abs(X - targetLocation.X);
+        var diffY = Math.Abs(Y - targetLocation.Y);
+
+        // Считаем дистанцию
+        var distance = diffX + diffY;
+        return distance;
     }
 
     /// <summary>
