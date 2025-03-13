@@ -103,6 +103,7 @@ public class Courier : Aggregate<Guid>
         if (Status == CourierStatus.Busy) return Errors.TryAssignOrderWhenCourierHasAlreadyBusy();
 
         Status = CourierStatus.Busy;
+
         return UnitResult.Success<Error>();
     }
 
@@ -127,8 +128,8 @@ public class Courier : Aggregate<Guid>
         var distanceToResult = Location.DistanceTo(location);
         if (distanceToResult.IsFailure) return distanceToResult.Error;
         var distance = distanceToResult.Value;
-
         var time = (double)distance / Transport.Speed;
+
         return time;
     }
 

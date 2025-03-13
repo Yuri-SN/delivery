@@ -71,8 +71,8 @@ public class Transport : Entity<Guid>
         cruisingRange -= Math.Abs(moveX);
 
         var moveY = Math.Clamp(difY, -cruisingRange, cruisingRange);
-
         var newLocation = Location.Create(current.X + moveX, current.Y + moveY).Value;
+
         return newLocation;
     }
 }
