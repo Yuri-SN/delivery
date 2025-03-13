@@ -37,6 +37,7 @@ public class OrderShould
     public void ReturnValueIsRequiredErrorWhenOrderIdIsEmpty(Guid orderId, Location location)
     {
         // Arrange
+        // Act
         var result = Order.Create(orderId, location);
 
         // Assert
@@ -49,7 +50,7 @@ public class OrderShould
     {
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.Create(5, 5).Value).Value;
-        var courier = Courier.Create("Ваня", TransportType.Pedestrian, Location.Create(1, 1).Value).Value;
+        var courier = Courier.Create("Ваня", "Pedestrian", 1, Location.Create(1, 1).Value).Value;
 
         // Act
         var result = order.Assign(courier);
@@ -65,7 +66,7 @@ public class OrderShould
     {
         // Arrange
         var order = Order.Create(Guid.NewGuid(), Location.Create(5, 5).Value).Value;
-        var courier = Courier.Create("Ваня", TransportType.Pedestrian, Location.Create(1, 1).Value).Value;
+        var courier = Courier.Create("Ваня", "Pedestrian", 1, Location.Create(1, 1).Value).Value;
         order.Assign(courier);
 
         // Act
